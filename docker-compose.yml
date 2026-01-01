@@ -1,6 +1,5 @@
-# ComfyUI Docker Compose File v1.0.1 by John Aldred
-# http://www.johnaldred.com
-# http://github.com/kaouthia
+# ComfyUI Docker Compose File v1.0.1 created by John Aldred
+# modified by ma-he-sh
 
 services:
   comfyk:
@@ -12,20 +11,22 @@ services:
       - "8188:8188"
     volumes:
       # persist your models, output, and settings:
-      - c:/home/user/comfyui/models:/app/ComfyUI/models
+      - ./models:/app/ComfyUI/models
 
       # persist your output images:
-      - c:/home/user/comfyui/output:/app/ComfyUI/output
+      - ./output:/app/ComfyUI/output
       
       # persist all your settings & extra nodes:
-      - c:/home/user/comfyui/settings:/app/ComfyUI/user/default:rw
+      - ./settings:/app/ComfyUI/user/default:rw
 
       # persist just your saved flows (overrides the workflows/ in default):
-      - c:/home/user/comfyui/flows:/app/ComfyUI/user/default/workflows:rw
+      - ./flows:/app/ComfyUI/user/default/workflows:rw
     
-    runtime: nvidia
-    environment:
-      - NVIDIA_VISIBLE_DEVICES=all
-    stdin_open: true
-    tty: true
     restart: unless-stopped
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              device_ids: ['0', '1']
+              capabilities: [gpu]
