@@ -1,10 +1,18 @@
-flows
+# Ignore all files in these directories
+flows/*
+models/*
+output/*
+settings/*
+
+# But do NOT ignore the .gitkeep files (keeps the folder structure in git)
 !flows/.gitkeep
-models
 !models/.gitkeep
-output
 !output/.gitkeep
-secure
-!secure/nginx.conf
-settings
 !settings/.gitkeep
+
+# Security folder handling
+# Ignore the password file entirely
+secure/.htpasswd
+
+# Allow the nginx configuration to be tracked
+!secure/nginx.conf
