@@ -2,13 +2,24 @@
 # modified by ma-he-sh
 
 services:
+  proxy:
+    image: nginx:alpine
+    container_name: comfyui_proxy
+    ports:
+      - "8188:80"  # You still access it via port 8188
+    volumes:
+      - ./secure/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./secure/.htpasswd:/etc/nginx/.htpasswd:ro
+    depends_on:
+      - comfyk
+    networks:
+      - comfy_net
+
   comfyk:
     build:
       dockerfile: Dockerfile
     image: comfyui:latest
     container_name: comfyui
-    ports:
-      - "8188:8188"
     volumes:
       # persist your models, output, and settings:
       - ./models:/app/ComfyUI/models
@@ -30,3 +41,10 @@ services:
             - driver: nvidia
               device_ids: ['0', '1']
               capabilities: [gpu]
+
+    networks:
+      - comfy_net
+
+networks:
+  comfy_net:
+    driver: bridge

@@ -30,14 +30,16 @@ RUN apt-get update \
 COPY entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
 
+WORKDIR /app
+
+# Ensure appuser owns /app so it can clone the repo
+RUN chown -R $UID:$GID /app
+
 # Switch to non-root user
 USER $UID:$GID
 
 # make ~/.local/bin available on the PATH so scripts like tqdm, torchrun, etc. are found
 ENV PATH=/home/appuser/.local/bin:$PATH
-
-# Set the working directory
-WORKDIR /app
 
 # Clone the ComfyUI repository (replace URL with the official repo)
 RUN git clone https://github.com/comfyanonymous/ComfyUI.git
