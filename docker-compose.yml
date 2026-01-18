@@ -42,7 +42,7 @@ services:
     networks:
       - comfy_net
 
-ollama:
+  ollama:
     volumes:
       - ./ollama/ollama:/root/.ollama
     container_name: ollama
