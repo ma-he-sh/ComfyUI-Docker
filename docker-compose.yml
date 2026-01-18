@@ -29,9 +29,6 @@ services:
       
       # persist all your settings & extra nodes:
       - ./settings:/app/ComfyUI/user/default:rw
-
-      # persist just your saved flows (overrides the workflows/ in default):
-      - ./flows:/app/ComfyUI/user/default/workflows:rw
     
     restart: unless-stopped
     deploy:
@@ -39,11 +36,34 @@ services:
         reservations:
           devices:
             - driver: nvidia
-              device_ids: ['0', '1']
+              device_ids: ['1']
               capabilities: [gpu]
 
     networks:
       - comfy_net
+
+ollama:
+    volumes:
+      - ./ollama/ollama:/root/.ollama
+    container_name: ollama
+    pull_policy: always
+    tty: true
+    restart: unless-stopped
+    image: docker.io/ollama/ollama:latest
+    ports:
+      - 7869:11434
+    environment:
+      - OLLAMA_KEEP_ALIVE=24h
+    networks:
+      - comfy_net
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              device_ids: ['0']
+              capabilities: [gpu]
+
 
 networks:
   comfy_net:
